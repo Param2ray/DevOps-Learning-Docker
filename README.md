@@ -1,4 +1,5 @@
-# DevOps Learning Docker
+# 🐳 CoderCo Containers Challenge
+## 🚀 Building a Multi-Container Flask + Redis Application
 
 🐳 CoderCo Containers Challenge
 🚀 Building a Multi-Container Flask + Redis Application
