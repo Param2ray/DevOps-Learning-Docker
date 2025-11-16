@@ -42,10 +42,15 @@ Multi-Container-Application/
 --
 Tool	Purpose
 🐍 Python (Flask)	Backend web framework
+
 💾 Redis	In-memory key-value store
+
 🐳 Docker	Containerization
+
 ⚙️ Docker Compose	Multi-container orchestration
+
 📦 Volumes	Persistent data for Redis
+
 🔐 Environment Variables	Configuring container communication
 
 🌍 How It Works
