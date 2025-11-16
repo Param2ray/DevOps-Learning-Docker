@@ -1,29 +1,34 @@
 # 🐳 CoderCo Containers Challenge
-## 🚀 Building a Multi-Container Flask + Redis Application
-
-🐳 CoderCo Containers Challenge
 🚀 Building a Multi-Container Flask + Redis Application
-📘 Overview
+--
 
-This project was part of the CoderCo Containers Challenge, where I built a multi-container web application using Docker and Docker Compose.
+This project was part of the CoderCo Containers Challenge, where I built a multi-container application using Docker and Docker Compose.
 
-The goal was simple but powerful:
-Create a lightweight Flask web app that connects to a Redis database to count page visits — all running inside containers and orchestrated seamlessly.
+The idea was simple — but powerful:
+Create a lightweight Flask web app that connects to a Redis database to count how many times a page has been visited. Everything runs inside containers and works together through Docker Compose.
+
+This challenge helped me understand how real containerized applications communicate, scale, and persist data.
 
 🎯 Objectives
-
-✅ Build a Flask application with two routes:
+--
+Build a Flask application with two routes:
 
 / → Displays a welcome message
 
-/count → Increments and displays a visit count stored in Redis
+/count → Increments and shows a Redis-stored counter
 
-✅ Use Redis as a key-value store
-✅ Dockerize both services
-✅ Connect everything using Docker Compose
-✅ Add persistent storage, environment variables, and scaling
+Use Redis as a fast in-memory database
+
+Containerize both services with Docker
+
+Link them using Docker Compose
+
+Add persistent storage and environment variables
+
+Test scaling the web app to multiple containers
 
 🧱 Project Structure
+--
 Multi-Container-Application/
 │
 ├── app/
@@ -34,24 +39,35 @@ Multi-Container-Application/
 └── docker-compose.yml
 
 ⚙️ Tools & Technologies
+--
 Tool	Purpose
 🐍 Python (Flask)	Backend web framework
-💾 Redis	In-memory database for counting visits
-🐳 Docker	Containerization of both services
+💾 Redis	In-memory key-value store
+🐳 Docker	Containerization
 ⚙️ Docker Compose	Multi-container orchestration
-📦 Volumes	Data persistence for Redis
-🔐 Environment Variables	Configuration management
+📦 Volumes	Persistent data for Redis
+🔐 Environment Variables	Configuring container communication
+
 🌍 How It Works
+--
+The Flask app runs inside one container
 
-The Flask app runs inside one container.
+The Redis server runs inside another
 
-The Redis database runs in another.
+Docker Compose creates a shared internal network so they can talk to each other
 
-Both communicate through Docker’s internal network created by Compose.
+Every time the /count route is visited:
 
-Every time /count is visited, Flask connects to Redis, increments a key, and displays the updated count.
+Flask connects to Redis
+
+Redis increments a stored value
+
+Flask displays the updated count
+
+This simulates real microservice communication using containers.
 
 🧩 Docker Compose Setup
+--
 services:
   web:
     build: ./app
@@ -71,96 +87,85 @@ services:
 volumes:
   redis_data:
 
-▶️ How to Run
-# Build and start all containers
+▶️ How to Run the Application
+--
+1. Build and start all containers
 docker-compose up --build
 
+▶️ Open your browser
+--
 
-Then open your browser:
+🌐 http:\/\/localhost:5002 → Welcome page
 
-- 🌐 `http://localhost:5002` → Welcome message  
-- 🔢 `http://localhost:5002/count` → Visit count (increments each refresh)
+🔢 http:\/\/localhost:5002/count (increments each refresh)
 
-
-To stop and clean up:
-
+▶️ Stop and clean up
+--
 docker-compose down --volumes
 
-💡 Challenges & How I Overcame Them
-🧩 1. Flask Module Not Found
+💡 Challenges & How I Solved Them
+--
+### 🧩 1. Flask Module Not Found
 
-Issue: The container threw ModuleNotFoundError: No module named 'flask'.
-Fix: I added a requirements.txt file and installed dependencies inside the container:
+Issue: ModuleNotFoundError: No module named 'flask'
+
+Fix: Added requirements.txt and installed dependencies in the Dockerfile:
 
 RUN pip install --no-cache-dir -r requirements.txt
 
+### ⚙️ 2. Redis Connection Error
 
-✅ This ensured Flask and Redis were installed in the image during build.
+Issue: Flask couldn’t connect using localhost
 
-⚙️ 2. Redis Connection Error
-
-Issue: Flask couldn’t connect to Redis using localhost.
-Fix: In Docker Compose, containers connect via service names, not localhost.
-I updated the code to use:
+Fix: Containers communicate using service names, not localhost:
 
 redis_host = os.getenv("REDIS_HOST", "redis")
 
+### 💾 3. Data Lost After Restart
 
-✅ Flask now communicates with Redis through the shared Docker network.
+Issue: Redis counter reset every run
 
-💾 3. Data Lost After Container Restart
-
-Issue: Redis data reset every time I stopped the containers.
-Fix: Added a named volume for Redis data:
+Fix: Added a named volume:
 
 volumes:
-  - redis_data:/data
+  redis_data:/data
 
 
-✅ Redis now stores its data persistently.
+Now Redis keeps data between runs.
 
-⚖️ 4. Scaling the Flask App
+### ⚖️ 4. Scaling Flask Containers
 
-Goal: Run multiple instances of Flask sharing one Redis counter.
-Solution:
+To simulate a real web service, I scaled the web container:
 
 docker-compose up --scale web=3 --build
 
 
-✅ Multiple Flask containers now share the same Redis backend, maintaining a single counter.
+Multiple Flask containers all shared the same Redis counter — great for demonstrating horizontal scaling.
 
 🧠 Key Learnings
+--
 
-How multi-container networking works inside Docker Compose
+How Docker Compose handles networking internally
 
-The importance of environment variables for flexible configurations
+Why environment variables matter for container communication
 
-Managing persistent data using Docker volumes
+Using volumes for persistent storage
 
-Reading and troubleshooting logs with docker-compose logs
+Debugging container logs with docker-compose logs
 
-The real-world DevOps flow: build → test → deploy → scale
+Real DevOps workflow: build → test → deploy → scale
+
+Understanding how microservices communicate through internal networks
 
 🏁 Outcome
+--
 
-✅ Fully working Flask + Redis multi-container app
-✅ Data persists between runs
-✅ Containers connect via internal network
-✅ Ready for scaling and further production-style enhancements
+✅ Fully working Flask + Redis multi-container application
 
-🌟 Next Steps
+✅ Redis data persists between runs
 
-Add health checks to ensure Redis starts before Flask
+✅ Services communicate over Docker’s internal network
 
-Add NGINX for load balancing multiple web containers
+✅ Application can scale horizontally
 
-Deploy this setup to AWS ECS or EKS for cloud orchestration practice
-
-👨‍💻 Author
-
-Paramjyot Tooray
-🌐 Aspiring DevOps & Cloud Engineer
-
-🔗 GitHub: Param2ray
-
-🔗 LinkedIn
+✅ Clear understanding of container networking and orchestration
